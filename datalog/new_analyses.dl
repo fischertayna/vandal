@@ -1,0 +1,24 @@
+#include "lib/vandal.dl"
+
+.decl dangerousDelegateCall(stmt:Statement)
+.decl blockNumberDependency(stmt:Statement)
+.decl timestampDependency(stmt:Statement)
+// .decl freezingEther(stmt:Statement)
+
+.output dangerousDelegateCall
+.output blockNumberDependency
+.output timestampDependency
+// .output freezingEther
+
+dangerousDelegateCall(stmt) :-
+    op(data_stmt, "CALLDATASIZE"),
+    op(stmt, "DELEGATECALL"),
+    reaches(data_stmt, stmt).
+
+blockNumberDependency(stmt) :-
+    !inaccessible(stmt),
+    op(stmt, "NUMBER").
+
+timestampDependency(stmt) :-
+    !inaccessible(stmt),
+    op(stmt, "TIMESTAMP").
